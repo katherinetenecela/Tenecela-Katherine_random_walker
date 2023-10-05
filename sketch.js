@@ -1,39 +1,45 @@
-let W1;
+let pelota1;
 
 function setup() {
-  Walker.setup();
+  createCanvas(windowWidth, windowHeight);
+  pelota1 = new pelotarebota(windowWidth / 2, windowHeight * 0.2);
 }
 
 function draw() {
-  Walker.draw();
+  pelota1.update();
+  pelota1.display();
 }
 
-class Walker {
-  constructor(_x, _y) {
-    this.posx = _x;
-    this.posy = _y;
-    this.vel = random(1, 10);
-    this.color = color(255, random(0, 200), random(0, 200));
+class pelotarebota {
+  constructor(_posX, _posY) {
+    this.posX = _posX;
+    this.posY = _posY;
+    this.diam = random(10, 50);
+    this.rad = this.diam / 2;
+    this.esp = 50;
+    this.margen = 40;
+    this.piso = windowHeight - this.margen - this.esp / 2;
+    this.velY = 0;
+    this.acel = 0.98;
   }
 
   update() {
-    this.posx += random(-this.vel, this.vel);
-    this.posy += random(-this.vel, this.vel);
+    this.velY += this.acel;
+    this.posY += this.velY;
+    if (this.posY >= this.piso - this.rad) {
+      this.posY = this.piso - this.rad;
+      this.velY *= -1;
+    }
   }
 
   display() {
-    fill(this.color);
+    background(0, 220, 210, 50);
     noStroke();
-    circle(this.posx, this.posy, 10);
-  }
+    rectMode(CENTER);
 
-  static setup() {
-    createCanvas(windowWidth, windowHeight);
-    W1 = new Walker(200, 200);
-  }
-
-  static draw() {
-    W1.update();
-    W1.display();
+    fill(255);
+    circle(this.posX, this.posY, this.diam);
+    fill(255, 0, 0);
+    rect(windowWidth / 2, windowHeight - this.margen, windowWidth, this.esp);
   }
 }
